@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,6 +24,9 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -30,7 +34,6 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.model.Person;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -42,7 +45,7 @@ import org.springframework.samples.petclinic.model.Person;
  */
 @Entity
 @Table(name = "owners")
-public class Owner extends Person {
+public class Owner implements Serializable {
 
   @Column(name = "address")
   @NotEmpty
@@ -59,6 +62,15 @@ public class Owner extends Person {
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
   private Set<Pet> pets;
+  @Column(name = "first_name")
+  @NotEmpty
+  private String firstName;
+  @Column(name = "last_name")
+  @NotEmpty
+  private String lastName;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
   public String getAddress() {
     return this.address;
@@ -147,5 +159,33 @@ public class Owner extends Person {
         .append("lastName", this.getLastName())
         .append("firstName", this.getFirstName()).append("address", this.address)
         .append("city", this.city).append("telephone", this.telephone).toString();
+  }
+
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return this.lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public boolean isNew() {
+    return this.id == null;
   }
 }

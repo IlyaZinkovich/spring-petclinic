@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.function.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  * <ul> <li><strong>Spring IoC container caching</strong> which spares us unnecessary set up time
  * between test execution.</li> <li><strong>Dependency Injection</strong> of test fixture instances,
  * meaning that we don't need to perform application context lookups. See the use of {@link
- * Autowired @Autowired} on the <code>{@link ClinicServiceTests#clinicService clinicService}</code>
+ * Autowired @Autowired} on the <code>{@link ClinicServiceTests clinicService}</code>
  * instance variable, which uses autowiring <em>by type</em>. <li><strong>Transaction
  * management</strong>, meaning each test method is executed in its own transaction, which is
  * automatically rolled back by default. Thus, even if tests insert or otherwise change database
@@ -124,10 +125,18 @@ public class ClinicServiceTests {
     public void shouldFindAllPetTypes() {
         Collection<PetType> petTypes = this.pets.findPetTypes();
 
-        PetType petType1 = EntityUtils.getById(petTypes, PetType.class, 1);
+        PetType petType1 = getById(petTypes, 1, PetType::getId);
         assertThat(petType1.getName()).isEqualTo("cat");
-        PetType petType4 = EntityUtils.getById(petTypes, PetType.class, 4);
+        PetType petType4 = getById(petTypes, 4, PetType::getId);
         assertThat(petType4.getName()).isEqualTo("snake");
+    }
+
+    private <T> T getById(final Collection<T> collection, final int id,
+        final Function<T, Integer> idExtractor) {
+        return collection.stream()
+            .filter(petType -> new Integer(id).equals(idExtractor.apply(petType)))
+            .findAny()
+            .orElseThrow(AssertionError::new);
     }
 
     @Test
@@ -139,7 +148,7 @@ public class ClinicServiceTests {
         Pet pet = new Pet();
         pet.setName("bowser");
         Collection<PetType> types = this.pets.findPetTypes();
-        pet.setType(EntityUtils.getById(types, PetType.class, 2));
+        pet.setType(getById(types, 2, PetType::getId));
         pet.setBirthDate(new Date());
         owner6.addPet(pet);
         assertThat(owner6.getPets().size()).isEqualTo(found + 1);
@@ -171,7 +180,7 @@ public class ClinicServiceTests {
     public void shouldFindVets() {
         Collection<Vet> vets = this.vets.findAll();
 
-        Vet vet = EntityUtils.getById(vets, Vet.class, 3);
+        Vet vet = getById(vets, 3, Vet::getId);
         assertThat(vet.getLastName()).isEqualTo("Douglas");
         assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
         assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");

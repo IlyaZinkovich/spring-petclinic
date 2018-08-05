@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -26,6 +27,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -35,7 +39,6 @@ import javax.persistence.TemporalType;
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.visit.Visit;
 
 /**
@@ -47,7 +50,7 @@ import org.springframework.samples.petclinic.visit.Visit;
  */
 @Entity
 @Table(name = "pets")
-public class Pet extends NamedEntity {
+public class Pet implements Serializable {
 
   @Column(name = "birth_date")
   @Temporal(TemporalType.DATE)
@@ -64,6 +67,11 @@ public class Pet extends NamedEntity {
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "petId", fetch = FetchType.EAGER)
   private Set<Visit> visits = new LinkedHashSet<>();
+  @Column(name = "name")
+  private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
   public Date getBirthDate() {
     return this.birthDate;
@@ -112,4 +120,28 @@ public class Pet extends NamedEntity {
     visit.setPetId(this.getId());
   }
 
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return this.getName();
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public boolean isNew() {
+    return this.id == null;
+  }
 }

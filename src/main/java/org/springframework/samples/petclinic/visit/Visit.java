@@ -15,15 +15,18 @@
  */
 package org.springframework.samples.petclinic.visit;
 
+import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.BaseEntity;
 
 /**
  * Simple JavaBean domain object representing a visit.
@@ -33,7 +36,7 @@ import org.springframework.samples.petclinic.model.BaseEntity;
  */
 @Entity
 @Table(name = "visits")
-public class Visit extends BaseEntity {
+public class Visit implements Serializable {
 
   @Column(name = "visit_date")
   @Temporal(TemporalType.TIMESTAMP)
@@ -46,6 +49,9 @@ public class Visit extends BaseEntity {
 
   @Column(name = "pet_id")
   private Integer petId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
   /**
    * Creates a new instance of Visit for the current date
@@ -78,4 +84,15 @@ public class Visit extends BaseEntity {
     this.petId = petId;
   }
 
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public boolean isNew() {
+    return this.id == null;
+  }
 }

@@ -15,15 +15,49 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-import org.springframework.samples.petclinic.model.NamedEntity;
 
 /**
  * @author Juergen Hoeller Can be Cat, Dog, Hamster...
  */
 @Entity
 @Table(name = "types")
-public class PetType extends NamedEntity {
+public class PetType implements Serializable {
 
+  @Column(name = "name")
+  private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  public String getName() {
+    return this.name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return this.getName();
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public boolean isNew() {
+    return this.id == null;
+  }
 }

@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.io.Serializable;
+import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,11 +31,10 @@ import javax.persistence.Table;
 @Table(name = "types")
 public class PetType implements Serializable {
 
-  @Column(name = "name")
-  private String name;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+  private String name;
 
   public String getName() {
     return this.name;

@@ -15,7 +15,7 @@
         <th>Name</th>
         <th>Birth Date</th>
         <th>Type</th>
-        <th>Owner</th>
+        <!--<th>Owner</th>-->
       </tr>
     </thead>
     <tr>
@@ -23,8 +23,7 @@
       <td
         th:text="${#calendars.format(pet.birthDate, 'yyyy-MM-dd')}" /></td>
       <td th:text="${pet.type}" /></td>
-      <td
-        th:text="${pet.owner?.firstName + ' ' + pet.owner?.lastName}" /></td>
+      <!--<td th:text="${pet.owner?.firstName + ' ' + pet.owner?.lastName}" /></td>-->
     </tr>
   </table>
 

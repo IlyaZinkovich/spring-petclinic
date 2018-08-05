@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -53,17 +54,15 @@ import org.springframework.samples.petclinic.visit.Visit;
 public class Pet implements Serializable {
 
   @Column(name = "birth_date")
-  @Temporal(TemporalType.DATE)
   @DateTimeFormat(pattern = "yyyy-MM-dd")
-  private Date birthDate;
+  private LocalDate birthDate;
 
   @ManyToOne
   @JoinColumn(name = "type_id")
   private PetType type;
 
-  @ManyToOne
-  @JoinColumn(name = "owner_id")
-  private Owner owner;
+  @Column(name = "owner_id")
+  private Integer ownerId;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "petId", fetch = FetchType.EAGER)
   private Set<Visit> visits = new LinkedHashSet<>();
@@ -73,11 +72,11 @@ public class Pet implements Serializable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  public Date getBirthDate() {
+  public LocalDate getBirthDate() {
     return this.birthDate;
   }
 
-  public void setBirthDate(Date birthDate) {
+  public void setBirthDate(LocalDate birthDate) {
     this.birthDate = birthDate;
   }
 
@@ -87,14 +86,6 @@ public class Pet implements Serializable {
 
   public void setType(PetType type) {
     this.type = type;
-  }
-
-  public Owner getOwner() {
-    return this.owner;
-  }
-
-  protected void setOwner(Owner owner) {
-    this.owner = owner;
   }
 
   protected Set<Visit> getVisitsInternal() {
@@ -143,5 +134,9 @@ public class Pet implements Serializable {
 
   public boolean isNew() {
     return this.id == null;
+  }
+
+  public void setOwnerId(final int ownerId) {
+    this.ownerId = ownerId;
   }
 }

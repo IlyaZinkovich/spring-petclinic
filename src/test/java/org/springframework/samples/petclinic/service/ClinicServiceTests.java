@@ -92,8 +92,8 @@ public class ClinicServiceTests {
 
     final Name name = new Name("Sam", "Schultz");
     final Address address = new Address("Wollongong", "4, Evans Street");
-    final String telephone = "4444444444";
-    final Owner owner = new Owner(name, address, telephone);
+    final String phoneNumber = "4444444444";
+    final Owner owner = new Owner(name, address, phoneNumber);
     this.owners.save(owner);
     assertThat(owner.id().longValue()).isNotEqualTo(0);
 

@@ -39,7 +39,7 @@ CREATE TABLE owners (
   last_name  VARCHAR_IGNORECASE(30),
   address_first_line    VARCHAR(255),
   address_city       VARCHAR(80),
-  telephone  VARCHAR(20)
+  phone_number  VARCHAR(20)
 );
 CREATE INDEX owners_last_name ON owners (last_name);
 

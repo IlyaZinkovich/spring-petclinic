@@ -6,14 +6,14 @@ public class OwnerView {
   private final String name;
   private final String addressCity;
   private final String addressFirstLine;
-  private final String telephone;
+  private final String phoneNumber;
 
   public OwnerView(final Owner owner) {
     this.id = owner.id();
     this.name = owner.name().combined();
     this.addressCity = owner.address().city();
     this.addressFirstLine = owner.address().firstLine();
-    this.telephone = owner.telephone();
+    this.phoneNumber = owner.phoneNumber();
   }
 
   public Integer getId() {
@@ -32,7 +32,7 @@ public class OwnerView {
     return addressFirstLine;
   }
 
-  public String getTelephone() {
-    return telephone;
+  public String getPhoneNumber() {
+    return phoneNumber;
   }
 }

@@ -34,21 +34,21 @@ public class Owner implements Serializable {
   private Name name;
   @Embedded
   private Address address;
-  private String telephone;
+  private String phoneNumber;
 
   private Owner() {
 
   }
 
-  public Owner(final Integer id, final Name name, final Address address, final String telephone) {
-    this(name, address, telephone);
+  public Owner(final Integer id, final Name name, final Address address, final String phoneNumber) {
+    this(name, address, phoneNumber);
     this.id = id;
   }
 
-  public Owner(final Name name, final Address address, final String telephone) {
+  public Owner(final Name name, final Address address, final String phoneNumber) {
     this.name = name;
     this.address = address;
-    this.telephone = telephone;
+    this.phoneNumber = phoneNumber;
   }
 
   public Integer id() {
@@ -63,8 +63,8 @@ public class Owner implements Serializable {
     return this.address;
   }
 
-  public String telephone() {
-    return this.telephone;
+  public String phoneNumber() {
+    return this.phoneNumber;
   }
 
   public void rename(final Name name) {

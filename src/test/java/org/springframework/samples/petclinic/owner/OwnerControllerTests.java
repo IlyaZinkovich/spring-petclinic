@@ -42,8 +42,8 @@ public class OwnerControllerTests {
   public void setup() {
     final Name name = new Name("George", "Franklin");
     final Address madison = new Address("Madison", "110 W. Liberty St.");
-    final String telephone = "6085551023";
-    george = new Owner(TEST_OWNER_ID, name, madison, telephone);
+    final String phoneNumber = "6085551023";
+    george = new Owner(TEST_OWNER_ID, name, madison, phoneNumber);
     given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
   }
 
@@ -62,7 +62,7 @@ public class OwnerControllerTests {
         .param("lastName", "Bloggs")
         .param("address", "123 Caramel Street")
         .param("city", "London")
-        .param("telephone", "01316761638")
+        .param("phoneNumber", "01316761638")
     )
         .andExpect(status().is3xxRedirection());
   }
@@ -77,7 +77,7 @@ public class OwnerControllerTests {
         .andExpect(status().isOk())
         .andExpect(model().attributeHasErrors("owner"))
         .andExpect(model().attributeHasFieldErrors("owner", "address"))
-        .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+        .andExpect(model().attributeHasFieldErrors("owner", "phoneNumber"))
         .andExpect(view().name("owners/createOrUpdateOwnerForm"));
   }
 
@@ -85,7 +85,7 @@ public class OwnerControllerTests {
   public void testInitFindForm() throws Exception {
     mockMvc.perform(get("/owners/find"))
         .andExpect(status().isOk())
-        .andExpect(model().attributeExists("owner"))
+        .andExpect(model().attributeExists("findOwnerQuery"))
         .andExpect(view().name("owners/findOwners"));
   }
 
@@ -127,7 +127,7 @@ public class OwnerControllerTests {
         .andExpect(model().attribute("owner", hasProperty("firstName", is("George"))))
         .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
         .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
-        .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+        .andExpect(model().attribute("owner", hasProperty("phoneNumber", is("6085551023"))))
         .andExpect(view().name("owners/createOrUpdateOwnerForm"));
   }
 
@@ -138,7 +138,7 @@ public class OwnerControllerTests {
         .param("lastName", "Bloggs")
         .param("address", "123 Caramel Street")
         .param("city", "London")
-        .param("telephone", "01616291589")
+        .param("phoneNumber", "01616291589")
     )
         .andExpect(status().is3xxRedirection())
         .andExpect(view().name("redirect:/owners/{ownerId}"));
@@ -154,7 +154,7 @@ public class OwnerControllerTests {
         .andExpect(status().isOk())
         .andExpect(model().attributeHasErrors("owner"))
         .andExpect(model().attributeHasFieldErrors("owner", "address"))
-        .andExpect(model().attributeHasFieldErrors("owner", "telephone"))
+        .andExpect(model().attributeHasFieldErrors("owner", "phoneNumber"))
         .andExpect(view().name("owners/createOrUpdateOwnerForm"));
   }
 
@@ -166,7 +166,7 @@ public class OwnerControllerTests {
         .andExpect(model().attribute("owner", hasProperty("firstName", is("George"))))
         .andExpect(model().attribute("owner", hasProperty("address", is("110 W. Liberty St."))))
         .andExpect(model().attribute("owner", hasProperty("city", is("Madison"))))
-        .andExpect(model().attribute("owner", hasProperty("telephone", is("6085551023"))))
+        .andExpect(model().attribute("owner", hasProperty("phoneNumber", is("6085551023"))))
         .andExpect(view().name("owners/ownerDetails"));
   }
 

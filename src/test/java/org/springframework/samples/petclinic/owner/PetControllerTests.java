@@ -52,8 +52,8 @@ public class PetControllerTests {
     given(this.pets.findPetTypes()).willReturn(Lists.newArrayList(cat));
     final Name name = new Name("", "");
     final Address address = new Address("", "");
-    final String telephone = "";
-    final Owner owner = new Owner(name, address, telephone);
+    final String phoneNumber = "";
+    final Owner owner = new Owner(name, address, phoneNumber);
     given(this.owners.findById(TEST_OWNER_ID)).willReturn(owner);
     given(this.pets.findById(TEST_PET_ID)).willReturn(new Pet());
 

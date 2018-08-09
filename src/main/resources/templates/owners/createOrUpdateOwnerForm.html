@@ -7,9 +7,9 @@
   <form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
     <div class="form-group has-feedback">
       <input
-        th:replace="~{fragments/inputField :: input ('First Name', 'firstName', 'text')}" />
+        th:replace="~{fragments/inputField :: input ('First Name', 'name.firstName', 'text')}" />
       <input
-        th:replace="~{fragments/inputField :: input ('Last Name', 'lastName', 'text')}" />
+        th:replace="~{fragments/inputField :: input ('Last Name', 'name.lastName', 'text')}" />
       <input
         th:replace="~{fragments/inputField :: input ('Address', 'address', 'text')}" />
       <input
@@ -20,7 +20,7 @@
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <button
-          th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
+          th:with="text=${owner['id'] == null} ? 'Add Owner' : 'Update Owner'"
           class="btn btn-default" type="submit" th:text="${text}">Add
           Owner</button>
       </div>

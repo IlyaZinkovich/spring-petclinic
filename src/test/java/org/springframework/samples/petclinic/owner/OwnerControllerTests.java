@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.owner;
 
+import static org.assertj.core.util.Lists.newArrayList;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
@@ -9,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,13 +40,10 @@ public class OwnerControllerTests {
 
   @Before
   public void setup() {
-    george = new Owner();
-    george.setId(TEST_OWNER_ID);
-    george.setFirstName("George");
-    george.setLastName("Franklin");
-    george.setAddress("110 W. Liberty St.");
-    george.setCity("Madison");
-    george.setTelephone("6085551023");
+    final Name name = new Name("George", "Franklin");
+    final Address madison = new Address("Madison", "110 W. Liberty St.");
+    final String telephone = "6085551023";
+    george = new Owner(TEST_OWNER_ID, name, madison, telephone);
     given(this.owners.findById(TEST_OWNER_ID)).willReturn(george);
   }
 
@@ -94,7 +91,7 @@ public class OwnerControllerTests {
 
   @Test
   public void testProcessFindFormSuccess() throws Exception {
-    given(this.owners.findByLastName("")).willReturn(Lists.newArrayList(george, new Owner()));
+    given(this.owners.findByLastName("")).willReturn(newArrayList(george, george));
     mockMvc.perform(get("/owners"))
         .andExpect(status().isOk())
         .andExpect(view().name("owners/ownersList"));
@@ -102,7 +99,7 @@ public class OwnerControllerTests {
 
   @Test
   public void testProcessFindFormByLastName() throws Exception {
-    given(this.owners.findByLastName(george.getLastName())).willReturn(Lists.newArrayList(george));
+    given(this.owners.findByLastName(george.name().lastName())).willReturn(newArrayList(george));
     mockMvc.perform(get("/owners")
         .param("lastName", "Franklin")
     )

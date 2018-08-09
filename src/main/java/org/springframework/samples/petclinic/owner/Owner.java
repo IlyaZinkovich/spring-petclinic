@@ -16,119 +16,58 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotEmpty;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.core.style.ToStringCreator;
 
-/**
- * Simple JavaBean domain object representing an owner.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
- * @author Sam Brannen
- * @author Michael Isvy
- */
 @Entity
 @Table(name = "owners")
 public class Owner implements Serializable {
 
-  @Column(name = "address")
-  @NotEmpty
-  private String address;
-
-  @Column(name = "city")
-  @NotEmpty
-  private String city;
-
-  @Column(name = "telephone")
-  @NotEmpty
-  @Digits(fraction = 0, integer = 10)
-  private String telephone;
-
-  @Column(name = "first_name")
-  @NotEmpty
-  private String firstName;
-  @Column(name = "last_name")
-  @NotEmpty
-  private String lastName;
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
+  @Embedded
+  private Name name;
+  @Embedded
+  private Address address;
+  private String telephone;
 
-  public String getAddress() {
-    return this.address;
+  private Owner() {
+
   }
 
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public String getCity() {
-    return this.city;
-  }
-
-  public void setCity(String city) {
-    this.city = city;
-  }
-
-  public String getTelephone() {
-    return this.telephone;
-  }
-
-  public void setTelephone(String telephone) {
-    this.telephone = telephone;
-  }
-
-  @Override
-  public String toString() {
-    return new ToStringCreator(this)
-
-        .append("id", this.getId()).append("new", this.isNew())
-        .append("lastName", this.getLastName())
-        .append("firstName", this.getFirstName()).append("address", this.address)
-        .append("city", this.city).append("telephone", this.telephone).toString();
-  }
-
-  public String getFirstName() {
-    return this.firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return this.lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
+  public Owner(final Integer id, final Name name, final Address address, final String telephone) {
+    this(name, address, telephone);
     this.id = id;
   }
 
-  public boolean isNew() {
-    return this.id == null;
+  public Owner(final Name name, final Address address, final String telephone) {
+    this.name = name;
+    this.address = address;
+    this.telephone = telephone;
+  }
+
+  public Integer id() {
+    return id;
+  }
+
+  public Name name() {
+    return this.name;
+  }
+
+  public Address address() {
+    return this.address;
+  }
+
+  public String telephone() {
+    return this.telephone;
+  }
+
+  public void rename(final Name name) {
+    this.name = name;
   }
 }

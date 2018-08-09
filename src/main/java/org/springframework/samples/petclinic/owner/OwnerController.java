@@ -15,8 +15,12 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,18 +32,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * @author Juergen Hoeller
- * @author Ken Krebs
- * @author Arjen Poutsma
- * @author Michael Isvy
- */
 @Controller
 class OwnerController {
 
   private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
   private final OwnerRepository owners;
-
 
   public OwnerController(OwnerRepository clinicService) {
     this.owners = clinicService;
@@ -51,9 +48,7 @@ class OwnerController {
   }
 
   @GetMapping("/owners/new")
-  public String initCreationForm(Map<String, Object> model) {
-    Owner owner = new Owner();
-    model.put("owner", owner);
+  public String initCreationForm(ModelAndView modelAndView) {
     return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
   }
 
@@ -63,45 +58,35 @@ class OwnerController {
       return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     } else {
       this.owners.save(owner);
-      return "redirect:/owners/" + owner.getId();
+      return "redirect:/owners/" + owner.id();
     }
   }
 
   @GetMapping("/owners/find")
-  public String initFindForm(Map<String, Object> model) {
-    model.put("owner", new Owner());
+  public String initFindForm(final Map<String, Object> model) {
+    model.put("findOwnerQuery", new FindOwnerQuery());
     return "owners/findOwners";
   }
 
   @GetMapping("/owners")
-  public String processFindForm(Owner owner, BindingResult result, Map<String, Object> model) {
-
-    // allow parameterless GET request for /owners to return all records
-    if (owner.getLastName() == null) {
-      owner.setLastName(""); // empty string signifies broadest possible search
-    }
-
-    // find owners by last name
-    Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+  public String processFindForm(final FindOwnerQuery findOwnerQuery,
+      final Map<String, Object> model) {
+    final Collection<Owner> results =
+        this.owners.findByLastName(Optional.ofNullable(findOwnerQuery.getLastName()).orElse(""));
     if (results.isEmpty()) {
-      // no owners found
-      result.rejectValue("lastName", "notFound", "not found");
       return "owners/findOwners";
     } else if (results.size() == 1) {
-      // 1 owner found
-      owner = results.iterator().next();
-      return "redirect:/owners/" + owner.getId();
+      final Owner owner = results.iterator().next();
+      return format("redirect:/owners/%d", owner.id());
     } else {
-      // multiple owners found
-      model.put("selections", results);
+      model.put("selections", results.stream().map(OwnerView::new).collect(toList()));
       return "owners/ownersList";
     }
   }
 
   @GetMapping("/owners/{ownerId}/edit")
   public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-    Owner owner = this.owners.findById(ownerId);
-    model.addAttribute(owner);
+    Optional.ofNullable(this.owners.findById(ownerId)).ifPresent(model::addAttribute);
     return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
   }
 
@@ -111,7 +96,6 @@ class OwnerController {
     if (result.hasErrors()) {
       return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
     } else {
-      owner.setId(ownerId);
       this.owners.save(owner);
       return "redirect:/owners/{ownerId}";
     }
@@ -125,8 +109,10 @@ class OwnerController {
    */
   @GetMapping("/owners/{ownerId}")
   public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
-    ModelAndView mav = new ModelAndView("owners/ownerDetails");
-    mav.addObject(this.owners.findById(ownerId));
+    final ModelAndView mav = new ModelAndView("owners/ownerDetails");
+    Optional.ofNullable(this.owners.findById(ownerId))
+        .map(OwnerView::new)
+        .ifPresent(ownerView -> mav.addObject("owner", ownerView));
     return mav;
   }
 
